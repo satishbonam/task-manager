@@ -2,7 +2,7 @@ name: Trello-Google Calendar Sync
 
 on:
   schedule:
-    - cron: '*/6 9-23 * * *'
+    - cron: '*/10 9-23 * * *'
   workflow_dispatch:
 
 jobs:
