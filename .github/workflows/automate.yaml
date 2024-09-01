@@ -25,11 +25,23 @@ jobs:
       #     name: token
       #     path: .
 
-      - name: Set up Google Credentials
-        # Save the credentials JSON to a file named credentials.json
-        run: echo "$GOOGLE_CREDENTIALS_JSON" > credentials.json
+      - name: Set up environment variables
         env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
+          TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
+          TRELLO_WORKING_LIST_ID: ${{ secrets.TRELLO_WORKING_LIST_ID }}
+          TRELLO_DONE_LIST_ID: ${{ secrets.TRELLO_DONE_LIST_ID }}
+          TRELLO_REVIEW_LIST_ID: ${{ secrets.TRELLO_REVIEW_LIST_ID }}
           GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
+        run: echo "Environment variables set"
+
+      # - name: Set up Google Credentials
+      #   # Save the credentials JSON to a file named credentials.json
+      #   run: echo "$GOOGLE_CREDENTIALS_JSON" > credentials.json
+      #   env:
+      #     GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
 
       - name: Install dependencies
         run: |
