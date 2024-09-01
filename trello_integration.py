@@ -181,6 +181,6 @@ if __name__ == '__main__':
     print('REVIEW_LIST_ID:', REVIEW_LIST_ID)
     print('CALENDAR_ID:', CALENDAR_ID)
     if API_KEY and API_TOKEN and BOARD_ID and WORKING_LIST_ID and DONE_LIST_ID and REVIEW_LIST_ID and CALENDAR_ID:
-        main()
+        google_authenticate()
     else:
         print('Missing environment variables.')
