@@ -18,12 +18,12 @@ jobs:
         with:
           python-version: '3.x'
       
-      # - name: Download token.pickle artifact
-      #   id: download-token
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: token
-      #     path: .
+      - name: Download token.pickle artifact
+        id: download-token
+        uses: actions/download-artifact@v2
+        with:
+          name: token
+          path: .
 
       - name: Set up environment variables
         run: |
