@@ -82,7 +82,7 @@ def google_authenticate():
 def check_if_task_exists_in_calendar(task_id, creds):
     """Check if a Trello task already exists in Google Calendar."""
     service = build('calendar', 'v3', credentials=creds)
-    events_result = service.events().list(calendarId='primary').execute()
+    events_result = service.events().list(calendarId=CALENDAR_ID).execute()
     events = events_result.get('items', [])
     for event in events:
         if 'description' in event and event['description'] == task_id:
@@ -183,7 +183,6 @@ def convert_trello_date_to_calendar(trello_date):
     """Convert Trello date to Google Calendar ISO 8601 format."""
     if not trello_date:
         return None
-    print(type(trello_date), trello_date)
     dt = datetime.datetime.strptime(trello_date, '%Y-%m-%dT%H:%M:%S.%fZ')
 
     return dt
