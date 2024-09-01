@@ -2,7 +2,7 @@ name: Trello-Google Calendar Sync
 
 on:
   schedule:
-    - cron: '0 9-23 * * *'
+    - cron: '*/10 * * * *' # Runs every 10 minutes
   workflow_dispatch:      # Allows the workflow to be manually triggered
 
 jobs:

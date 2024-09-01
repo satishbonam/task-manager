@@ -86,8 +86,38 @@ def check_if_task_exists_in_calendar(task_id, creds):
     events = events_result.get('items', [])
     for event in events:
         if 'description' in event and event['description'] == task_id:
-            return True
-    return False
+            return event  # Return the existing event
+    return None
+
+
+def update_google_calendar_event(event, task, creds):
+    """Update an existing Google Calendar event with the new details from Trello."""
+    service = build('calendar', 'v3', credentials=creds)
+    start = datetime.datetime.now().isoformat()
+    end = (datetime.datetime.now() + datetime.timedelta(hours=1)).isoformat()
+    task_due = convert_trello_date_to_calendar(
+        task.badges.get('due')) if task.badges.get('due') else None
+    task_start = convert_trello_date_to_calendar(
+        task.badges.get('start')) if task.badges.get('start') else None
+    if task_due and task_start:
+        start = task_start.isoformat()
+        end = task_due.isoformat()
+    elif task_due:
+        end = task_due.isoformat()
+    elif task_start:
+        start = task_start.isoformat()
+        end = (task_start + datetime.timedelta(hours=1)).isoformat()
+    event['summary'] = task.name
+    event['start'] = {
+        'dateTime': start,
+        'timeZone': 'UTC',
+    }
+    event['end'] = {
+        'dateTime': end,
+        'timeZone': 'UTC',
+    }
+    service.events().update(calendarId=CALENDAR_ID,
+                            eventId=event['id'], body=event).execute()
 
 
 def add_task_to_google_calendar(task, creds):
@@ -164,22 +194,18 @@ def main():
     tasks = get_todays_tasks_from_trello()
 
     for task in tasks:
-
+        event = check_if_task_exists_in_calendar(task.id, creds)
         # Check if task already exists in Calendar and Sheets
-        if not check_if_task_exists_in_calendar(task.id, creds):
+        if event is None:
             # Add task to Google Calendar and Sheets
             add_task_to_google_calendar(task, creds)
+        else:
+            # Update task in Google Calendar
+            event = check_if_task_exists_in_calendar(task.id, creds)
+            update_google_calendar_event(event, task, creds)
 
 
 if __name__ == '__main__':
-    print('Starting Trello Integration...')
-    print('API_KEY:', API_KEY)
-    print('API_TOKEN:', API_TOKEN)
-    print('BOARD_ID:', BOARD_ID)
-    print('WORKING_LIST_ID:', WORKING_LIST_ID)
-    print('DONE_LIST_ID:', DONE_LIST_ID)
-    print('REVIEW_LIST_ID:', REVIEW_LIST_ID)
-    print('CALENDAR_ID:', CALENDAR_ID)
     if API_KEY and API_TOKEN and BOARD_ID and WORKING_LIST_ID and DONE_LIST_ID and REVIEW_LIST_ID and CALENDAR_ID:
         main()
     else:
