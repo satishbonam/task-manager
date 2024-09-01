@@ -1,0 +1,46 @@
+name: Trello-Google Calendar Sync
+
+on:
+  schedule:
+    - cron: '0 9-23 * * *'
+  workflow_dispatch:      # Allows the workflow to be manually triggered
+
+jobs:
+  run-python-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      
+      - name: Download token.pickle artifact
+        id: download-token
+        uses: actions/download-artifact@v2
+        with:
+          name: token
+          path: .
+
+      - name: Set up Google Credentials
+        # Save the credentials JSON to a file named credentials.json
+        run: echo "$GOOGLE_CREDENTIALS_JSON" > credentials.json
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run the Trello-Google Calendar sync script
+        run: |
+          python trello_integration.py
+
+      - name: Upload token.pickle
+        uses: actions/upload-artifact@v2
+        with:
+          name: token
+          path: token.pickle
