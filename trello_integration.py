@@ -93,25 +93,18 @@ def check_if_task_exists_in_calendar(task_id, creds):
 def update_google_calendar_event(event, task, creds):
     """Update an existing Google Calendar event with the new details from Trello."""
     service = build('calendar', 'v3', credentials=creds)
-    start = datetime.datetime.now().isoformat()
     end = (datetime.datetime.now() + datetime.timedelta(hours=1)).isoformat()
     task_due = convert_trello_date_to_calendar(
         task.badges.get('due')) if task.badges.get('due') else None
     task_start = convert_trello_date_to_calendar(
         task.badges.get('start')) if task.badges.get('start') else None
     if task_due and task_start:
-        start = task_start.isoformat()
         end = task_due.isoformat()
     elif task_due:
         end = task_due.isoformat()
     elif task_start:
-        start = task_start.isoformat()
         end = (task_start + datetime.timedelta(hours=1)).isoformat()
     event['summary'] = task.name
-    event['start'] = {
-        'dateTime': start,
-        'timeZone': 'UTC',
-    }
     event['end'] = {
         'dateTime': end,
         'timeZone': 'UTC',
