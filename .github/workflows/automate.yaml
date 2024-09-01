@@ -17,6 +17,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+      - name: Restore cached token.pickle
+        id: cache-token
+        uses: actions/cache@v3
+        with:
+          path: token.pickle
+          key: token-cache
       - name: Set up environment variables
         run: |
           echo "Setting environment variables..."
@@ -61,23 +67,3 @@ jobs:
         run: |
           python trello_integration.py
 
-      - name: Check for token.pickle
-        run: |
-          if [ ! -f "token.pickle" ]; then
-            echo "token.pickle not found in the repository."
-            exit 1
-          fi
-
-      - name: Save token.pickle to cache
-        if: steps.cache-token.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          path: token.pickle
-          key: token-cache
-
-      # - name: Download token.pickle artifact
-      #   id: download-token
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: token
-      #     path: .
