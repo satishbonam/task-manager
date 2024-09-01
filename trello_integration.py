@@ -7,15 +7,15 @@ import pickle
 import datetime
 import json
 
-API_KEY = os.environ.get('TRELLO_API_KEY')
-API_TOKEN = os.environ.get('TRELLO_API_TOKEN')
+API_KEY = os.getenv('TRELLO_API_KEY')
+API_TOKEN = os.getenv('TRELLO_API_TOKEN')
 
-BOARD_ID = os.environ.get('TRELLO_BOARD_ID')
-WORKING_LIST_ID = os.environ.get('TRELLO_WORKING_LIST_ID')
-DONE_LIST_ID = os.environ.get('TRELLO_DONE_LIST_ID')
-REVIEW_LIST_ID = os.environ.get('TRELLO_REVIEW_LIST_ID')
+BOARD_ID = os.getenv('TRELLO_BOARD_ID')
+WORKING_LIST_ID = os.getenv('TRELLO_WORKING_LIST_ID')
+DONE_LIST_ID = os.getenv('TRELLO_DONE_LIST_ID')
+REVIEW_LIST_ID = os.getenv('TRELLO_REVIEW_LIST_ID')
 
-CALENDAR_ID = os.environ.get('GOOGLE_CALENDAR_ID')
+CALENDAR_ID = os.getenv('GOOGLE_CALENDAR_ID')
 
 
 # Trello API Setup
@@ -65,7 +65,7 @@ def google_authenticate():
             creds.refresh(Request())
         else:
             # Load credentials from environment variable
-            credentials_json = os.environ['GOOGLE_CREDENTIALS_JSON']
+            credentials_json = os.getenv('GOOGLE_CREDENTIALS_JSON')
             credentials_info = json.loads(credentials_json)
 
             flow = InstalledAppFlow.from_client_config(
